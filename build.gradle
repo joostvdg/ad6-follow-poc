@@ -1,0 +1,77 @@
+buildscript {
+	ext {
+		springBootVersion = '1.4.0.BUILD-SNAPSHOT'
+        springfoxVersion = '2.3.1'
+	}
+	repositories {
+		mavenCentral()
+		maven { url "https://repo.spring.io/snapshot" }
+		maven { url "https://repo.spring.io/milestone" }
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}") 
+	}
+}
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'spring-boot'
+apply plugin: 'build-announcements'
+
+jar {
+	baseName = 'ad6-follow-poc'
+	version = '0.0.1-SNAPSHOT'
+}
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+	maven {
+        credentials {
+            username 'deployment'
+            password 'flusso126a'
+        }
+        url "https://nexus2.flusso.nl/nexus/content/groups/public/"
+    }
+    mavenCentral()
+    maven { url "https://m2.neo4j.org" }
+    maven { url "https://repo.spring.io/snapshot" }
+    maven { url "https://repo.spring.io/milestone" }
+    maven { url "https://repo.spring.io/libs-release" }
+}
+
+
+dependencies {
+	compile 'org.springframework.cloud:spring-cloud-starter-hystrix'
+	compile 'org.springframework.cloud:spring-cloud-starter-hystrix-dashboard'
+	compile 'org.springframework.boot:spring-boot-starter-data-redis'
+	compile 'org.springframework.boot:spring-boot-starter-data-rest'
+	compile 'org.springframework.boot:spring-boot-devtools'
+	compile 'org.springframework.boot:spring-boot-starter-web'
+
+    compile 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.6.4'
+    compile 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.6.4'
+
+    compile "org.springframework.data:spring-data-neo4j"
+	compile 'org.springframework.data:spring-data-neo4j-rest:3.4.2.RELEASE'
+
+    compile 'io.swagger:swagger-annotations:1.5.5'
+    compile 'io.swagger:swagger-jersey-jaxrs:1.5.5'
+    compile "io.springfox:springfox-swagger2:${springfoxVersion}"
+    compile "io.springfox:springfox-swagger-ui:${springfoxVersion}"
+    compile "io.springfox:springfox-staticdocs:${springfoxVersion}"
+
+	testCompile 'org.springframework.boot:spring-boot-starter-test'
+}
+
+dependencyManagement {
+	imports { 
+		mavenBom "org.springframework.cloud:spring-cloud-starter-parent:Brixton.BUILD-SNAPSHOT" 
+	}
+}
+
+
+
+task wrapper(type: Wrapper) {
+	gradleVersion = '2.9'
+}
